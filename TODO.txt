@@ -1,0 +1,5 @@
+// User Flow
+    -Login with firebase
+    -Fetch All users
+    -Display all users
+    -Everytime we send a message, save to message document, then send message stream
