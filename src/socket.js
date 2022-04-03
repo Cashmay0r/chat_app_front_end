@@ -1,7 +1,8 @@
 import {io} from 'socket.io-client';
 import {useUserStore} from './store/users';
 const url = import.meta.env.VITE_SOCKET_SERVER;
-const socket = io(url, {autoConnect: false});
+//const socket = io(url, {autoConnect: false, transports: ['websocket']});
+const socket = io(url, {transports: ['websocket', 'polling'], autoConnect: false});
 
 const connectToSocket = async () => {
   const userStore = useUserStore();
