@@ -22,10 +22,6 @@ export const useUserStore = defineStore('userStore', {
     },
     setCurrentUser(user) {
       const parsedUser = JSON.parse(JSON.stringify(user));
-      console.log(parsedUser);
-      if (parsedUser) {
-        connectToSocket();
-      }
       this.currentUser = parsedUser;
     },
     setActiveUsers(users) {

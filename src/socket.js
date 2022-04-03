@@ -1,13 +1,12 @@
 import {io} from 'socket.io-client';
 import {useUserStore} from './store/users';
-
-const socket = io('http://localhost:3000', {autoConnect: false});
+const url = import.meta.env.VITE_SOCKET_SERVER;
+const socket = io(url, {autoConnect: false});
 
 const connectToSocket = async () => {
   const userStore = useUserStore();
-
   if (userStore.currentUser) {
-    console.log('Connecting to Websocket', userStore.currentUser);
+    console.log('Connecting to Websocket');
     const sessionID = localStorage.getItem('sessionID');
     if (sessionID) {
       socket.auth = {};

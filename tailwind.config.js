@@ -1,7 +1,12 @@
 module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'hover-dark': '#4a5469',
+        'primary-dark': '#2A303C',
+      },
+    },
   },
   plugins: [require('daisyui')],
   daisyui: {

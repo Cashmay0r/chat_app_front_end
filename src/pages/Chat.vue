@@ -1,17 +1,23 @@
 <template>
   <div>
-    <div class="flex flex-row justify-start items-center gap-2 h-14 border">
+    <div class="flex flex-row justify-between items-center gap-2 h-14 rounded-md">
       <div
-        class="w-10 h-10 border justify-center items-center flex"
+        class="w-10 h-10 justify-center items-center flex text-sm p-2 cursor-pointer"
         @click="router.go(-1)"
       >
-        Back
+        <font-awesome-icon icon="arrow-left" class="w-full h-full" />
       </div>
-      <div class="w-10 h-10 rounded-full">
-        <img alt="" v-if="recipient" :src="recipient.picture" class="rounded-full" />
+      <div class="flex flex-row justify-center items-center gap-5">
+        <div class="w-10 h-10 rounded-full">
+          <img alt="" v-if="recipient" :src="recipient.picture" class="rounded-full" />
+        </div>
+        <div>
+          <h1 v-text="recipient.username" v-if="recipient" class="font-semibold"></h1>
+        </div>
       </div>
-      <div>
-        <h1 v-text="recipient.username" v-if="recipient"></h1>
+
+      <div class="flex justify-center items-center">
+        <DotMenu></DotMenu>
       </div>
     </div>
     <div
@@ -33,29 +39,31 @@
       ></p>
     </div>
     <form
-      class="h-14 absolute bottom-0 w-full flex justify-center items-center"
+      class="h-14 absolute bottom-0 w-full flex justify-center items-center px-3 gap-1"
       @submit.prevent="onMessage"
     >
       <input
         type="text"
-        class="input input-bordered w-full h-5/6 input-sm"
+        class="input input-bordered w-auto h-5/6 input-sm rounded-full grow"
         placeholder="Send message"
         v-model="message"
       />
-      <div class="btn btn-sqaure" type="submit">Send</div>
+      <div
+        class="bg-info text-white rounded-full flex justify-center items-center w-10 h-10"
+        type="submit"
+      >
+        <font-awesome-icon icon="arrow-right" class="text-xl" />
+      </div>
     </form>
   </div>
 </template>
 
 <script setup>
 import { useUserStore } from "../store/users";
-import { useRouter, useRoute, createWebHistory } from "vue-router";
+import { useRouter } from "vue-router";
 import { socket } from "../socket";
-import { ref, defineProps, defineEmits, onMounted, computed, watch } from "vue";
-
-const emit = defineEmits(["closeChat"]);
-
-const route = useRoute();
+import { ref, onMounted, computed, watch } from "vue";
+import DotMenu from "../components/DotMenu.vue";
 
 const recipient = ref(null);
 
@@ -76,7 +84,6 @@ const activeUsers = computed(() => {
 
 watch(activeUsers, (newVal) => {
   getUser();
-  console.log(recipient.value);
 });
 
 const getUser = () => {
@@ -97,12 +104,13 @@ const onMessage = () => {
   if (userStore.selectedUser) {
     const content = message.value;
     socket.emit("private message", {
+      from: userStore.currentUser.sub,
       content,
       to: userStore.selectedUser.userId,
     });
     userStore.selectedUser.messages.push({
       content,
-      from: userStore.currentUser.uid,
+      from: userStore.currentUser.sub,
       to: userStore.selectedUser.userId,
     });
     message.value = "";

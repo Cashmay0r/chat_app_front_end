@@ -1,27 +1,32 @@
 <template>
-  <div class="text-black text-xl w-auto h-full flex flex-col">
+  <div class="text-xl w-auto h-full flex flex-col">
     <div
       class="flex flex-col w-full justify-center items-center"
       v-if="userStore.currentUser"
     >
-      <div
-        class="w-full h-12 bg-white flex justify-center items-center border-b border-black"
-      >
-        Messages
+      <div class="h-14 flex flex-row justify-between items-center w-full">
+        <h1 class="px-5">Messages</h1>
+        <div class="w-12">
+          <DotMenu></DotMenu>
+        </div>
       </div>
-      <div v-for="user in users" :key="user.userId" class="w-full">
+      <div
+        v-for="user in users"
+        :key="user.userId"
+        class="w-full flex flex-col justify-center items-center"
+      >
         <li
-          v-if="user.userId != userStore.currentUser.sub"
           @click="openMessages(user)"
-          class="flex flex-col bg-transparent rounded-xl px-2 my-2 w-[95%] h-16 justify-center items-start text-white hover:bg-[#4a5469] cursor-pointer"
+          v-if="!user.self"
+          class="flex flex-col bg-transparent rounded-xl px-2 my-2 w-[90%] h-16 justify-center items-start text-white hover:bg-[#4a5469] cursor-pointer"
         >
           <div class="flex flex-row justify-start items-start gap-2">
-            <div class="w-14 h-14 bg-black rounded-full">
-              <img alt="" v-if="user" :src="user.picture" class="rounded-full" />
+            <div class="w-12 h-12 rounded-full border border-hover-dark">
+              <img alt="" v-if="user" :src="user.picture" class="rounded-full w-12" />
             </div>
             <div>
-              <h1 v-text="user.username" class="text-xl font-semibold"></h1>
-              <div class="text-sm italic">
+              <h1 v-text="user.username" class="text-sm font-semibold"></h1>
+              <div class="text-xs italic">
                 <p v-if="user.messages.length <= 0">No messages</p>
                 <p v-else v-text="user.messages[user.messages.length - 1].content"></p>
               </div>
@@ -36,11 +41,11 @@
 </template>
 
 <script setup>
-import Chat from "@/pages/Chat.vue";
-import { socket } from "../socket.js";
+import { socket, connectToSocket } from "../socket.js";
 import { reactive, onUnmounted, ref, onMounted, watch, computed } from "vue";
 import { useUserStore } from "../store/users.js";
 import { useRouter } from "vue-router";
+import DotMenu from "@/components/DotMenu.vue";
 
 const userStore = useUserStore();
 
@@ -53,6 +58,12 @@ const router = useRouter();
 
 const users = computed(() => {
   return userStore.activeUsers;
+});
+
+onMounted(() => {
+  if (userStore.isLoggedIn) {
+    connectToSocket();
+  }
 });
 
 const openMessages = (user) => {
