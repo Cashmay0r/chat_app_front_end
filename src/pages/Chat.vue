@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full flex flex-col h-screen">
     <div class="flex flex-row justify-between items-center gap-2 h-14 rounded-md">
       <div
         class="w-10 h-10 justify-center items-center flex text-sm p-2 cursor-pointer"
@@ -20,26 +20,29 @@
         <DotMenu></DotMenu>
       </div>
     </div>
-    <div
-      id="messageContainer"
-      v-for="(message, index) in recipient.messages"
-      :key="index"
-      class="flex flex-col my-1"
-      v-if="recipient"
-    >
-      <p
-        v-if="message.from === userStore.currentUser.sub"
-        v-text="message.content"
-        class="rounded-xl bg-blue-500 px-2 text-white w-fit ml-auto"
-      ></p>
-      <p
-        v-else
-        v-text="message.content"
-        class="rounded-xl bg-gray-500 px-2 text-white w-fit mr-auto"
-      ></p>
+    <div class="overflow-auto px-5 py-2">
+      <div
+        id="messageContainer"
+        v-for="(message, index) in recipient.messages"
+        :key="index"
+        class="flex flex-col my-1"
+        v-if="recipient"
+      >
+        <p
+          v-if="message.from === userStore.currentUser.sub"
+          v-text="message.content"
+          class="rounded-xl bg-blue-500 px-2 py-1 text-white w-fit ml-auto"
+        ></p>
+        <p
+          v-else
+          v-text="message.content"
+          class="rounded-xl bg-gray-500 px-2 py-1 text-white w-fit mr-auto"
+        ></p>
+      </div>
     </div>
+
     <form
-      class="h-14 absolute bottom-0 w-full flex justify-center items-center px-3 gap-1"
+      class="h-14 bottom-0 w-full flex justify-center items-center px-3 gap-1"
       @submit.prevent="onMessage"
     >
       <input
@@ -47,13 +50,14 @@
         class="input input-bordered w-auto h-5/6 input-sm rounded-full grow"
         placeholder="Send message"
         v-model="message"
+        required
       />
-      <div
-        class="bg-info text-white rounded-full flex justify-center items-center w-10 h-10"
+      <button
+        class="text-white rounded-full flex justify-center items-center w-10 h-10 bg-info"
         type="submit"
       >
         <font-awesome-icon icon="arrow-right" class="text-xl" />
-      </div>
+      </button>
     </form>
   </div>
 </template>
