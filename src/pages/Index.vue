@@ -6,13 +6,13 @@
       </div>
       <button
         class="btn btn-info btn-wide"
-        @click="router.push('/home')"
+        @click="loginUser"
         v-if="!userStore.isLoggedIn"
       >
-        Enter
+        Login
       </button>
-      <div v-if="userStore.isLoggedIn" class="flex flex-col gap-2">
-        <button class="btn btn-info btn-wide" @click="loginUser">Login</button>
+      <div v-else class="flex flex-col gap-2">
+        <button class="btn btn-info btn-wide" @click="router.push('/home')">Enter</button>
         <button @click="logoutUser" class="btn btn-error btn-wide">Logout</button>
       </div>
     </div>
