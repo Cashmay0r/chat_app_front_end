@@ -42,7 +42,7 @@
     </div>
 
     <form
-      class="h-14 bottom-0 w-full flex justify-center items-center px-3 gap-1"
+      class="h-14 bottom-0 w-full flex justify-center items-center px-3 gap-1 py-1 fixed bg-base-100"
       @submit.prevent="onMessage"
     >
       <input
