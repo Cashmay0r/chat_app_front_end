@@ -20,7 +20,7 @@
         <DotMenu></DotMenu>
       </div>
     </div>
-    <div class="overflow-auto px-5 py-2 flex grow flex-col">
+    <div class="overflow-auto px-5 py-2 flex grow flex-col mb-14">
       <div
         id="messageContainer"
         v-for="(message, index) in recipient.messages"
@@ -42,7 +42,7 @@
     </div>
 
     <form
-      class="h-14 bottom-0 w-full flex justify-center items-center px-3 gap-1 py-1 relative bg-base-100"
+      class="h-14 bottom-0 w-full flex justify-center items-center px-3 gap-1 py-1 fixed bg-base-100"
       @submit.prevent="onMessage"
     >
       <input
