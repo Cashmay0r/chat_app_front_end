@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router';
 import Home from '@/pages/Home.vue';
 import Index from '@/pages/Index.vue';
 import Chat from '@/pages/Chat.vue';
+import Account from '@/pages/Account.vue';
 import {authGuard} from '@auth0/auth0-vue';
 
 const routes = [
@@ -18,7 +19,14 @@ const routes = [
     path: '/chat',
     component: Chat,
     name: 'Chat',
-    props: true,
+
+    beforeEnter: authGuard,
+  },
+  {
+    path: '/account',
+    component: Account,
+    name: 'Account',
+
     beforeEnter: authGuard,
   },
 ];

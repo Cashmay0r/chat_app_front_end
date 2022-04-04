@@ -8,9 +8,11 @@ export const useUserStore = defineStore('userStore', () => {
   const activeUsers = ref([]);
   const selectedUser = ref({});
   watch(currentUser, (state) => {
-    console.log('Current User: ', Object.keys(state).length);
-    if (Object.keys(state).length > 0) {
-      connectToSocket(state);
+    if (state != null) {
+      console.log('Current User: ', Object.keys(state).length);
+      if (Object.keys(state).length > 0) {
+        connectToSocket(state);
+      }
     }
   });
   const login = async () => {
