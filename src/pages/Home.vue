@@ -17,7 +17,6 @@
       >
         <li
           @click="openMessages(user)"
-          v-if="!user.self"
           class="flex flex-col bg-transparent rounded-xl px-2 my-2 w-[90%] h-16 justify-center items-start text-white hover:bg-[#4a5469] cursor-pointer"
         >
           <div class="flex flex-row justify-start items-start gap-2">
@@ -25,7 +24,16 @@
               <img alt="" v-if="user" :src="user.picture" class="rounded-full w-12" />
             </div>
             <div>
-              <h1 v-text="user.username" class="text-sm font-semibold"></h1>
+              <h1
+                v-text="user.username"
+                class="text-sm font-semibold"
+                v-if="!user.self"
+              ></h1>
+              <h1
+                v-text="user.username + ' (Yourself)'"
+                class="text-sm font-semibold"
+                v-if="user.self"
+              ></h1>
               <div class="text-xs italic">
                 <p v-if="user.messages.length <= 0">No messages</p>
                 <p v-else v-text="user.messages[user.messages.length - 1].content"></p>
@@ -68,7 +76,42 @@ onMounted(() => {
 
 const openMessages = (user) => {
   userStore.setSelectedUser(user);
-  localStorage.setItem("recipientID", user.userId);
   router.push({ name: "Chat" });
 };
+
+const recipient = computed(() => {
+  return userStore.selectedUser;
+});
+
+const activeUsers = computed(() => {
+  return userStore.activeUsers;
+});
+
+socket.on("private message", ({ content, from }) => {
+  console.log("Got a private message");
+  console.log(content, from);
+  for (let i = 0; i < activeUsers.value.length; i++) {
+    console.log("In loop", activeUsers.value[i]);
+    if (activeUsers.value[i].userId === from) {
+      console.log("Pushing Message", content);
+      activeUsers.value[i].messages.push({
+        content,
+        fromSelf: false,
+      });
+      break;
+    }
+  }
+  /* userStore.activeUsers.forEach((user) => {
+    if (user.userId === from) {
+      console.log("Pushing Message", content);
+      user.messages.push({
+        content,
+        fromSelf: false,
+      });
+      if (user !== userStore.selectedUser) {
+        user.hasNewMessages = true;
+      }
+    }
+  }); */
+});
 </script>

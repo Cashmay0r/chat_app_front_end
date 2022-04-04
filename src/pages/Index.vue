@@ -7,14 +7,14 @@
       <button
         class="btn btn-info btn-wide"
         @click="router.push('/home')"
-        v-if="isAuthenticated"
+        v-if="!userStore.isLoggedIn"
       >
         Enter
       </button>
-      <button class="btn btn-info btn-wide" @click="loginUser" v-else>Login</button>
-      <button @click="logoutUser" class="btn btn-error btn-wide" v-if="isAuthenticated">
-        Logout
-      </button>
+      <div v-if="userStore.isLoggedIn" class="flex flex-col gap-2">
+        <button class="btn btn-info btn-wide" @click="loginUser">Login</button>
+        <button @click="logoutUser" class="btn btn-error btn-wide">Logout</button>
+      </div>
     </div>
   </div>
 </template>

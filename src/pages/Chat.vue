@@ -65,12 +65,12 @@ import { socket } from "../socket";
 import { ref, onMounted, computed, watch } from "vue";
 import DotMenu from "../components/DotMenu.vue";
 
-const recipient = ref(null);
+const recipient = computed(() => {
+  return userStore.selectedUser;
+});
 
-onMounted(() => {
-  if (activeUsers.value.length > 0) {
-    getUser();
-  }
+const activeUsers = computed(() => {
+  return userStore.activeUsers;
 });
 const userStore = useUserStore();
 
@@ -78,57 +78,20 @@ const router = useRouter();
 
 const message = ref("");
 
-const activeUsers = computed(() => {
-  return userStore.activeUsers;
-});
-
-watch(activeUsers, (newVal) => {
-  getUser();
-});
-
-const getUser = () => {
-  const userId = localStorage.getItem("recipientID");
-
-  if (userId) {
-    userStore.activeUsers.forEach((user) => {
-      if (user.userId === userId) {
-        console.log("Found User", user.username);
-        recipient.value = user;
-        userStore.selectedUser = user;
-      }
-    });
-  }
-};
-
 const onMessage = () => {
-  if (userStore.selectedUser) {
+  if (recipient.value) {
     const content = message.value;
     socket.emit("private message", {
       from: userStore.currentUser.sub,
       content,
-      to: userStore.selectedUser.userId,
+      to: recipient.value.userId,
     });
-    userStore.selectedUser.messages.push({
+    recipient.value.messages.push({
       content,
       from: userStore.currentUser.sub,
-      to: userStore.selectedUser.userId,
+      to: recipient.value.userId,
     });
     message.value = "";
   }
 };
-
-socket.on("private message", ({ content, from }) => {
-  userStore.activeUsers.forEach((user) => {
-    if (user.userId === from) {
-      console.log("Pushing Message", content);
-      user.messages.push({
-        content,
-        fromSelf: false,
-      });
-      if (user !== userStore.selectedUser) {
-        user.hasNewMessages = true;
-      }
-    }
-  });
-});
 </script>

@@ -3,6 +3,7 @@ import { socket, connectToSocket } from "./socket";
 import { useUserStore } from "@/store/users.js";
 import { ref, onUnmounted, onMounted, computed, watch } from "vue";
 import { useAuth0 } from "@auth0/auth0-vue";
+
 const { user, isAuthenticated } = useAuth0();
 
 const userStore = useUserStore();
@@ -53,10 +54,7 @@ watch(userState, async (newVal) => {
   userStore.changeLoggedInState(newVal);
 });
 
-onMounted(() => {
-  userStore.setCurrentUser(user.value);
-  userStore.changeLoggedInState(isAuthenticated.value);
-});
+onMounted(() => {});
 
 // On user connect
 socket.on("connect", () => {
@@ -88,9 +86,14 @@ socket.on("user connected", (user) => {
   }
 
   if (!exists) {
-    initReactiveProperties(user);
+    addToUsers(user);
   }
 });
+
+const addToUsers = (user) => {
+  user.messages = [];
+  userStore.addActiveUser(user);
+};
 
 socket.on("user disconnected", (id) => {
   console.log(`${id} has disconnected`);
