@@ -4,10 +4,15 @@ import {reactive, ref, watch} from 'vue';
 
 export const useUserStore = defineStore('userStore', () => {
   const isLoggedIn = ref(false);
-  const currentUser = ref(null);
+  const currentUser = ref({});
   const activeUsers = ref([]);
   const selectedUser = ref({});
-
+  watch(currentUser, (state) => {
+    console.log('Current User: ', Object.keys(state).length);
+    if (Object.keys(state).length > 0) {
+      connectToSocket(state);
+    }
+  });
   const login = async () => {
     loginWithRedirect();
   };

@@ -68,11 +68,7 @@ const users = computed(() => {
   return userStore.activeUsers;
 });
 
-onMounted(() => {
-  if (userStore.isLoggedIn) {
-    connectToSocket();
-  }
-});
+onMounted(() => {});
 
 const openMessages = (user) => {
   userStore.setSelectedUser(user);

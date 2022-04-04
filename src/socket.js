@@ -4,18 +4,19 @@ const url = import.meta.env.VITE_SOCKET_SERVER;
 //const socket = io(url, {autoConnect: false, transports: ['websocket']});
 const socket = io(url, {transports: ['websocket', 'polling'], autoConnect: false});
 
-const connectToSocket = async () => {
+const connectToSocket = async (user) => {
   const userStore = useUserStore();
-  if (userStore.currentUser) {
+  console.log('In socket current user', user);
+  if (user) {
     console.log('Connecting to Websocket');
     const sessionID = localStorage.getItem('sessionID');
     if (sessionID) {
       socket.auth = {};
       socket.auth.sessionID = sessionID;
-      socket.auth.user = userStore.currentUser;
+      socket.auth.user = user;
     } else {
       socket.auth = {};
-      socket.auth.user = userStore.currentUser;
+      socket.auth.user = user;
     }
     socket.connect();
   } else {
